@@ -1,0 +1,378 @@
+swagger: "2.0"
+info:
+  version: 1.0.0
+  title: Roasteree API
+
+paths:
+  #! Login
+  /login:
+    post:
+      tags:
+        - Login
+      summary: login
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: Login
+          schema:
+            $ref: "#/definitions/Login"
+      responses:
+        201:
+          description: login success
+        400:
+          description: login failed
+        409:
+          description: an existing item already exists
+  #! Register
+  /register:
+    post:
+      tags:
+        - Register
+      summary: register
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: Register
+          schema:
+            $ref: "#/definitions/Register"
+      responses:
+        201:
+          description: register success
+        400:
+          description: register failed
+        409:
+          description: an existing item already exists
+  #! Articles
+  /articles:
+    post:
+      tags:
+        - Create Articles
+      summary: create article
+      produces:
+        - application/json
+      responses:
+        201:
+          description: Create Article success
+        400:
+          description: Failed to create article
+        409:
+          description: an existing article already exists
+    get:
+      tags:
+        - Get Articles
+      summary: get article
+      produces:
+        - application/json
+      responses:
+        201:
+          description: Get Article success
+        400:
+          description: Failed to get article
+  /articles/{article_id}:
+    delete:
+      tags:
+        - Delete Article
+      summary: delete article
+      parameters:
+        - in: path
+          required: true
+          name: "article_id"
+          type: string
+      responses:
+        200:
+          description: delete success
+        400:
+          description: delete failed
+    put:
+      tags:
+        - Edit Article
+      summary: edit article
+      parameters:
+        - in: path
+          required: true
+          name: "article_id"
+          type: string
+      responses:
+        200:
+          description: edit success
+        400:
+          description: edit failed
+  /coffee:
+    post:
+      tags:
+        - Create Coffee Beans
+      summary: create coffee beans
+      produces:
+        - application/json
+      responses:
+        201:
+          description: Create coffee beans success
+        400:
+          description: Create coffee beans failed
+        409:
+          description: an existing coffee beans already exists
+    get:
+      tags:
+        - Get Coffee Beans
+      summary: get coffee beans
+      produces:
+        - application/json
+      responses:
+        201:
+          description: Get coffee beans success
+        400:
+          description: Get coffee beans failed
+  /coffee/{coffe_id}:
+    delete:
+      tags:
+        - Delete Coffee Beans
+      summary: delete coffee beans
+      parameters:
+        - in: path
+          required: true
+          name: "coffee_id"
+          type: string
+      responses:
+        200:
+          description: delete success
+        400:
+          description: delete failed
+    put:
+      tags:
+        - Edit Coffee Beans
+      summary: edit coffee beans
+      parameters:
+        - in: path
+          required: true
+          name: "coffee_id"
+          type: string
+      responses:
+        200:
+          description: edit success
+        400:
+          description: edit failed
+  /order:
+    post:
+      tags:
+        - Create Order
+      summary: create order
+      produces:
+        - application/json
+      responses:
+        201:
+          description: Create order success
+        400:
+          description: Create order failed
+        409:
+          description: an existing order already exists
+    get:
+      tags:
+        - Get Order
+      summary: get order
+      produces:
+        - application/json
+      responses:
+        201:
+          description: Get order success
+        400:
+          description: Get order failed
+  /order/{order_id}:
+    delete:
+      tags:
+        - Delete Order
+      summary: delete order
+      parameters:
+        - in: path
+          required: true
+          name: "order_id"
+          type: string
+      responses:
+        200:
+          description: delete success
+        400:
+          description: delete failed
+    put:
+      tags:
+        - Edit Order
+      summary: edit order
+      parameters:
+        - in: path
+          required: true
+          name: "order_id"
+          type: string
+      responses:
+        200:
+          description: edit success
+        400:
+          description: edit failed
+  #! Profile
+  /users:
+    #! Get Profile
+    get:
+      tags:
+        - Get Profile
+      summary: get profile
+      responses:
+        200:
+          description: get profile
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/GetProfile"
+        400:
+          description: bad input parameter
+    #! Update Profile
+    put:
+      tags:
+        - Update Profile
+      summary: update profile
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: Update Profile
+          description: update profile
+          schema:
+            $ref: "#/definitions/Data"
+      responses:
+        201:
+          description: item update
+        400:
+          description: invalid input, object invalid
+        409:
+          description: an existing item already exists
+definitions:
+  GetProfile:
+    type: object
+    required:
+      - meta
+      - data
+    properties:
+      meta:
+        $ref: "#/definitions/Meta"
+      data:
+        $ref: "#/definitions/Data"
+  Data:
+    properties:
+      id:
+        type: integer
+        example: 1
+      name:
+        type: string
+        example: reza
+      address:
+        type: string
+        example: manyar jaya 5/40
+      email:
+        type: string
+        example: laurentius.reynaldo@amartha.com
+      password:
+        type: string
+        example: Go@amartha123456
+      role:
+        type: string
+        example: admin
+  Meta:
+    properties:
+      error_message:
+        type: string
+        example: Token Key Expired
+  Login:
+    properties:
+      email:
+        type: string
+        example: laurentius.reynaldo@amartha.com
+      password:
+        type: string
+        example: mDVN6MtzWb1YNUL5HwKm5A==
+  Register:
+    properties:
+      name:
+        type: string
+        example: richard
+      address:
+        type: string
+        example: manyar jaya 5/40
+      email:
+        type: string
+        example: laurentius.reynaldo@amartha.com
+      password:
+        type: string
+        example: mDVN6MtzWb1YNUL5HwKm5A==
+  Articles:
+    properties:
+      id:
+        type: number
+        example: 1
+      description:
+        type: string
+        example: lorem ip sum
+
+  Order:
+    properties:
+      id:
+        type: integer
+        example: 1
+      user_id:
+        type: integer
+        example: 1
+      total_price:
+        type: number
+        example: 60.0000
+      total_quantity:
+        type: number
+        example: 50
+      status:
+        type: string
+        example: paid
+
+  Order Detail:
+    properties:
+      id:
+        type: integer
+        example: 2
+      transaction_id:
+        type: integer
+        example: 3
+      coffee_id:
+        type: integer
+        example: 2
+      price:
+        type: number
+        example: 75000
+      quantity:
+        type: number
+        example: 44
+
+  Coffee:
+    properties:
+      id:
+        type: integer
+        example: 23
+      name:
+        type: string
+        example: Toraja
+      processing_type:
+        type: string
+        example: full-wash
+      roasting_level:
+        type: string
+        example: medium
+      elevation:
+        type: number
+        example: 5000
+      bean_type:
+        type: string
+        example: Robusta
+      region:
+        type: string
+        example: Java
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+basePath: /richardreynaldo/roasteree/1.0.0/
+schemes:
+  - https
