@@ -52,11 +52,6 @@ paths:
       summary: create article
       produces:
         - application/json
-      parameters:
-        - in: body
-          name: Create Articles
-          schema:
-            $ref: "#/definitions/CreateArticles"
       responses:
         201:
           description: Create Article success
@@ -70,11 +65,6 @@ paths:
       summary: get article
       produces:
         - application/json
-      parameters:
-        - in: body
-          name: Get Articles
-          schema:
-            $ref: "#/definitions/GetArticles"
       responses:
         201:
           description: Get Article success
@@ -116,11 +106,6 @@ paths:
       summary: create coffee beans
       produces:
         - application/json
-      parameters:
-        - in: body
-          name: Create Coffee Beans
-          schema:
-            $ref: "#/definitions/CreateCoffeeBeans"
       responses:
         201:
           description: Create coffee beans success
@@ -134,11 +119,6 @@ paths:
       summary: get coffee beans
       produces:
         - application/json
-      parameters:
-        - in: body
-          name: Get Coffee Beans
-          schema:
-            $ref: "#/definitions/GetCoffeeBeans"
       responses:
         201:
           description: Get coffee beans success
@@ -180,11 +160,6 @@ paths:
       summary: create order
       produces:
         - application/json
-      parameters:
-        - in: body
-          name: Create Order
-          schema:
-            $ref: "#/definitions/CreateOrder"
       responses:
         201:
           description: Create order success
@@ -198,11 +173,6 @@ paths:
       summary: get order
       produces:
         - application/json
-      parameters:
-        - in: body
-          name: Get Order
-          schema:
-            $ref: "#/definitions/GetOrder"
       responses:
         201:
           description: Get order success
@@ -330,6 +300,9 @@ definitions:
       email:
         type: string
         example: laurentius.reynaldo@amartha.com
+      password:
+        type: string
+        example: mDVN6MtzWb1YNUL5HwKm5A==
   Articles:
     properties:
       id:
@@ -400,6 +373,6 @@ definitions:
         example: Java
 # Added by API Auto Mocking Plugin
 host: virtserver.swaggerhub.com
-basePath: /richardreynaldo/roasteree/v1/
+basePath: /richardreynaldo/roasteree/1.0.0/
 schemes:
   - https
