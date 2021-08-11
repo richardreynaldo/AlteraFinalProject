@@ -9,8 +9,8 @@
     "database": {
         "host": "localhost",
         "port": "3306",
-        "user": "postgres",
-        "pass": "root123",
+        "user": "root",
+        "pass": "",
         "name": "altera"
     },
     "jwt":{

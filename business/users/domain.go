@@ -1,0 +1,27 @@
+package users
+
+import (
+	"context"
+	"time"
+)
+
+type Domain struct {
+	Id        uint
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt time.Time
+	Name      string
+	Address   string
+	Email     string
+	Password  string
+	Role      string
+	Token     string
+}
+
+type UseCase interface {
+	Login(ctx context.Context, email, password string) (Domain, error)
+}
+
+type Repository interface {
+	Login(ctx context.Context, email, password string) (Domain, error)
+}
