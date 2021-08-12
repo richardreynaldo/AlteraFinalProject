@@ -1,8 +1,8 @@
-package databases
+package mysql_driver
 
 import (
 	"fmt"
-	"finalProject/drivers/databases/users"
+	"log"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -16,7 +16,7 @@ type ConfigDB struct {
 	DB_Database string
 }
 
-func (config *ConfigDB) InitDB() *gorm.DB {
+func (config *ConfigDB) InitialDB() *gorm.DB {
 	dsn := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v?charset=utf8mb4&parseTime=True&loc=Local",
 		config.DB_Username,
 		config.DB_Password,
@@ -24,14 +24,10 @@ func (config *ConfigDB) InitDB() *gorm.DB {
 		config.DB_Port,
 		config.DB_Database)
 
-	DB, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		panic("Failed Connection Database")
+		log.Fatal(err)
 	}
-	Migrate(DB)
-	return DB
-}
 
-func Migrate(DB *gorm.DB) {
-	DB.AutoMigrate(&users.User{})
+	return db
 }

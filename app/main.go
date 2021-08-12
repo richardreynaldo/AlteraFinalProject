@@ -1,19 +1,23 @@
 package main
 
 import (
+	_userUsecase "finalProject/business/users"
+	_userController "finalProject/controllers/users"
+	_userRepo "finalProject/drivers/databases/users"
+
+	_dbDriver "finalProject/drivers/mysql"
+
+	// _ipLocatorDriver "finalProject/drivers/thirdparties/iplocator"
+
+	_middleware "finalProject/app/middleware"
+	_routes "finalProject/app/routes"
+
 	"log"
 	"time"
 
-	// _newsUsecase "pembayaran/business/news"
-	// _newsController "pembayaran/controllers/news"
-	// _newsRepo "pembayaran/driver/databases/news"
-	_userUseCase "finalProject/business/users"
-	_userController "finalProject/controllers/users"
-	_userRepo "finalProject/drivers/databases/users"
-	_dbHelper "finalProject/helpers/databases"
-
-	"github.com/labstack/echo"
+	echo "github.com/labstack/echo/v4"
 	"github.com/spf13/viper"
+	"gorm.io/gorm"
 )
 
 func init() {
@@ -28,29 +32,43 @@ func init() {
 	}
 }
 
+func dbMigrate(db *gorm.DB) {
+	db.AutoMigrate(
+		&_userRepo.User{},
+	)
+}
+
 func main() {
-	configdb := _dbHelper.ConfigDB{
+	configDB := _dbDriver.ConfigDB{
 		DB_Username: viper.GetString(`database.user`),
 		DB_Password: viper.GetString(`database.pass`),
 		DB_Host:     viper.GetString(`database.host`),
 		DB_Port:     viper.GetString(`database.port`),
 		DB_Database: viper.GetString(`database.name`),
 	}
-	db := configdb.InitDB()
+	db := configDB.InitialDB()
+	dbMigrate(db)
+
+	configJWT := _middleware.ConfigJWT{
+		SecretJWT:       viper.GetString(`jwt.secret`),
+		ExpiresDuration: viper.GetInt(`jwt.expired`),
+	}
+
 	timeoutContext := time.Duration(viper.GetInt("context.timeout")) * time.Second
 
 	e := echo.New()
 
-	userRepo := _userRepo.NewMysqlUserRepository(db)
-	userUseCase := _userUseCase.NewUserUsecase(userRepo, timeoutContext)
-	_userController.NewUserController(e, userUseCase)
+	// iplocatorRepo := _ipLocatorDriver.NewIPLocator()
 
-	// eAuth := e.Group("")
-	// eAuth.Use(middleware.JWT([]byte(viper.GetString(`jwt.Key`)))
-	// // jwt
-	// newsRepo := _newsRepo.NewMySQLNewsRepository(db)
-	// newsUsecase := _newsUsecase.NewNewsUsecase(newsRepo, categoryUsecase, ipLocator, timeoutContext)
-	// _newsController.NewNewsController(e, newsUsecase)
+	userRepo := _userRepo.NewMySQLUserRepository(db)
+	userUsecase := _userUsecase.NewUserUsecase(userRepo, &configJWT, timeoutContext)
+	userCtrl := _userController.NewUserController(userUsecase)
+
+	routesInit := _routes.ControllerList{
+		JWTMiddleware:      configJWT.Init(),
+		UserController:     *userCtrl,
+	}
+	routesInit.RouteRegister(e)
+
 	log.Fatal(e.Start(viper.GetString("server.address")))
-
 }

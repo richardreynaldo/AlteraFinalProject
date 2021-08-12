@@ -2,37 +2,53 @@ package users
 
 import (
 	"finalProject/business/users"
-	"finalProject/controllers"
+	controller "finalProject/controllers"
 	"finalProject/controllers/users/request"
 	"net/http"
 
-	"github.com/labstack/echo"
+	echo "github.com/labstack/echo/v4"
 )
 
 type UserController struct {
-	UserUseCase users.UseCase
+	userUseCase users.UseCase
 }
 
-func NewUserController(e *echo.Echo, userUC users.UseCase) {
-	controller := &UserController{
-		UserUseCase: userUC,
+func NewUserController(uc users.UseCase) *UserController {
+	return &UserController{
+		userUseCase: uc,
 	}
-
-	news := e.Group("user")
-	news.POST("/login", controller.Login)
 }
 
-func (controller *UserController) Login(c echo.Context) error {
-	var userLogin request.LoginUser
-	if err := c.Bind(&userLogin); err != nil {
-		return controllers.NewErrorResponse(c, http.StatusBadRequest, err)
+func (ctrl *UserController) Store(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	req := request.LoginUser{}
+	if err := c.Bind(&req); err != nil {
+		return controller.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	user, err := controller.UserUseCase.Login(c.Request().Context(), userLogin.Email, userLogin.Password)
-
+	err := ctrl.userUseCase.Store(ctx, req.ToDomain())
 	if err != nil {
-		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+		return controller.NewErrorResponse(c, http.StatusInternalServerError, err)
 	}
 
-	return controllers.NewSuccessResponse(c, user)
+	return controller.NewSuccessResponse(c, "Successfully inserted")
+}
+
+func (ctrl *UserController) CreateToken(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	email := c.QueryParam("email")
+	password := c.QueryParam("password")
+
+	token, err := ctrl.userUseCase.CreateToken(ctx, email, password)
+	if err != nil {
+		return controller.NewErrorResponse(c, http.StatusInternalServerError, err)
+	}
+
+	response := struct {
+		Token string `json:"token"`
+	}{Token: token}
+
+	return controller.NewSuccessResponse(c, response)
 }

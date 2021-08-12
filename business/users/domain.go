@@ -19,9 +19,11 @@ type Domain struct {
 }
 
 type UseCase interface {
-	Login(ctx context.Context, email, password string) (Domain, error)
+	CreateToken(ctx context.Context, email, password string) (string, error)
+	Store(ctx context.Context, data *Domain) error
 }
 
 type Repository interface {
-	Login(ctx context.Context, email, password string) (Domain, error)
+	GetByEmail(ctx context.Context, email string) (Domain, error)
+	Store(ctx context.Context, data *Domain) error
 }
