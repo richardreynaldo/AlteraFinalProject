@@ -14,6 +14,14 @@ type articlesUsecase struct {
 	contextTimeout     time.Duration
 }
 
+func NewArticleUsecase(ar Repository, uc users.UseCase, timeout time.Duration) Usecase {
+	return &articlesUsecase{
+		articlesRepository: ar,
+		userUsecase:        uc,
+		contextTimeout:     timeout,
+	}
+}
+
 func (au *articlesUsecase) Fetch(ctx context.Context, page, perpage int) ([]Domain, int, error) {
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
