@@ -2,27 +2,70 @@ package users
 
 import (
 	"context"
-	"finalProject/helpers/middlewares"
+	"finalProject/app/middleware"
+	"finalProject/business"
+	"finalProject/helpers/encrypt"
+	"strings"
 	"time"
 )
 
-type UserUseCase struct {
-	Repository     Repository
-	ContextTimeout time.Duration
+type userUsecase struct {
+	userRepository Repository
+	contextTimeout time.Duration
+	jwtAuth        *middleware.ConfigJWT
 }
 
-func NewUserUsecase(repository Repository, timeout time.Duration) UseCase {
-	return &UserUseCase{
-		Repository:     repository,
-		ContextTimeout: timeout,
+func NewUserUsecase(ur Repository, jwtauth *middleware.ConfigJWT, timeout time.Duration) UseCase {
+	return &userUsecase{
+		userRepository: ur,
+		jwtAuth:        jwtauth,
+		contextTimeout: timeout,
 	}
 }
 
-func (usecase *UserUseCase) Login(ctx context.Context, email, password string) (Domain, error) {
-	result, err := usecase.Repository.Login(ctx, email, password)
+func (uc *userUsecase) CreateToken(ctx context.Context, username, password string) (string, error) {
+	ctx, cancel := context.WithTimeout(ctx, uc.contextTimeout)
+	defer cancel()
+
+	if strings.TrimSpace(username) == "" && strings.TrimSpace(password) == "" {
+		return "", business.ErrUsernamePasswordNotFound
+	}
+
+	userDomain, err := uc.userRepository.GetByEmail(ctx, username)
 	if err != nil {
-		return Domain{}, err
+		return "", err
 	}
-	result.Token, _ = middlewares.GenerateTokenJWT(int32(result.Id))
-	return result, nil
+
+	if !encrypt.ValidateHash(password, userDomain.Password) {
+		return "", business.ErrInternalServer
+	}
+
+	token := uc.jwtAuth.GenerateToken(int(userDomain.Id))
+	return token, nil
+}
+
+func (uc *userUsecase) Store(ctx context.Context, userDomain *Domain) error {
+	ctx, cancel := context.WithTimeout(ctx, uc.contextTimeout)
+	defer cancel()
+
+	existedUser, err := uc.userRepository.GetByEmail(ctx, userDomain.Email)
+	if err != nil {
+		if !strings.Contains(err.Error(), "not found") {
+			return err
+		}
+	}
+	if existedUser != (Domain{}) {
+		return business.ErrDuplicateData
+	}
+
+	userDomain.Password, err = encrypt.Hash(userDomain.Password)
+	if err != nil {
+		return business.ErrInternalServer
+	}
+	err = uc.userRepository.Store(ctx, userDomain)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
