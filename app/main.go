@@ -5,6 +5,10 @@ import (
 	_userController "finalProject/controllers/users"
 	_userRepo "finalProject/drivers/databases/users"
 
+	_articleUsecase "finalProject/business/articles"
+	_articleController "finalProject/controllers/articles"
+	_articleRepo "finalProject/drivers/databases/articles"
+
 	_dbDriver "finalProject/drivers/mysql"
 
 	// _ipLocatorDriver "finalProject/drivers/thirdparties/iplocator"
@@ -35,6 +39,7 @@ func init() {
 func dbMigrate(db *gorm.DB) {
 	db.AutoMigrate(
 		&_userRepo.User{},
+		&_articleRepo.Articles{},
 	)
 }
 
@@ -64,9 +69,14 @@ func main() {
 	userUsecase := _userUsecase.NewUserUsecase(userRepo, &configJWT, timeoutContext)
 	userCtrl := _userController.NewUserController(userUsecase)
 
+	articleRepo := _articleRepo.NewMySQLArticleRepository(db)
+	articleUsecase := _articleUsecase.NewArticleUsecase(articleRepo, userUsecase, timeoutContext)
+	articleCtrl := _articleController.NewArticleController(articleUsecase)
+
 	routesInit := _routes.ControllerList{
-		JWTMiddleware:      configJWT.Init(),
-		UserController:     *userCtrl,
+		JWTMiddleware:     configJWT.Init(),
+		UserController:    *userCtrl,
+		ArticleController: *articleCtrl,
 	}
 	routesInit.RouteRegister(e)
 

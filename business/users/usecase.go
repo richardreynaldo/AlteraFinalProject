@@ -69,3 +69,15 @@ func (uc *userUsecase) Store(ctx context.Context, userDomain *Domain) error {
 
 	return nil
 }
+
+func (uc *userUsecase) GetByID(ctx context.Context, id int) (Domain, error) {
+	if id <= 0 {
+		return Domain{}, business.ErrIDNotFound
+	}
+
+	resp, err := uc.userRepository.GetByID(ctx, id)
+	if err != nil {
+		return Domain{}, err
+	}
+	return resp, nil
+}
