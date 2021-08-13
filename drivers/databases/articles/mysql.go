@@ -50,7 +50,7 @@ func (ar *mysqlArticlesRepository) GetByID(ctx context.Context, newsId int) (art
 
 func (ar *mysqlArticlesRepository) GetByDescription(ctx context.Context, newsTitle string) (articles.Domain, error) {
 	rec := Articles{}
-	err := ar.Conn.Where("title = ?", newsTitle).First(&rec).Error
+	err := ar.Conn.Where("description = ?", newsTitle).First(&rec).Error
 	if err != nil {
 		return articles.Domain{}, err
 	}
@@ -92,7 +92,7 @@ func (ar *mysqlArticlesRepository) Update(ctx context.Context, newsDomain *artic
 func (ar *mysqlArticlesRepository) Find(ctx context.Context) ([]articles.Domain, error) {
 	rec := []Articles{}
 
-	query := ar.Conn.Preload("Article")
+	query := ar.Conn.Preload("articles")
 
 	err := query.Find(&rec).Error
 	if err != nil {

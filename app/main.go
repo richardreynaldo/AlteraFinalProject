@@ -39,6 +39,7 @@ func init() {
 func dbMigrate(db *gorm.DB) {
 	db.AutoMigrate(
 		&_userRepo.User{},
+		&_articleRepo.Articles{},
 	)
 }
 
