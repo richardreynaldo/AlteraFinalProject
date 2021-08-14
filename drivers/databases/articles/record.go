@@ -11,7 +11,7 @@ type Articles struct {
 	Description string
 	UserId      int
 	User        users.User
-	CreatedAt   time.Time
+	CreatedAt   time.Time `gorm:"<-create"`
 	UpdatedAt   time.Time
 }
 

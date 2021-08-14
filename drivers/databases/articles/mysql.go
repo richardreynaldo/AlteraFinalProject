@@ -21,7 +21,7 @@ func (ar *mysqlArticlesRepository) Fetch(ctx context.Context, page, perpage int)
 	rec := []Articles{}
 
 	offset := (page - 1) * perpage
-	err := ar.Conn.Preload("articles").Offset(offset).Limit(perpage).Find(&rec).Error
+	err := ar.Conn.Preload("User").Offset(offset).Limit(perpage).Find(&rec).Error
 	if err != nil {
 		return []articles.Domain{}, 0, err
 	}
@@ -64,8 +64,8 @@ func (ar *mysqlArticlesRepository) Store(ctx context.Context, newsDomain *articl
 	if result.Error != nil {
 		return articles.Domain{}, result.Error
 	}
-
-	err := ar.Conn.Preload("Article").First(&rec, rec.Id).Error
+	// ini buat join
+	err := ar.Conn.Preload("User").First(&rec, rec.Id).Error
 	if err != nil {
 		return articles.Domain{}, result.Error
 	}
@@ -81,7 +81,7 @@ func (ar *mysqlArticlesRepository) Update(ctx context.Context, newsDomain *artic
 		return articles.Domain{}, result.Error
 	}
 
-	err := ar.Conn.Preload("Article").First(&rec, rec.Id).Error
+	err := ar.Conn.Preload("User").First(&rec, rec.Id).Error
 	if err != nil {
 		return articles.Domain{}, result.Error
 	}
@@ -92,7 +92,7 @@ func (ar *mysqlArticlesRepository) Update(ctx context.Context, newsDomain *artic
 func (ar *mysqlArticlesRepository) Find(ctx context.Context) ([]articles.Domain, error) {
 	rec := []Articles{}
 
-	query := ar.Conn.Preload("articles")
+	query := ar.Conn.Preload("User")
 
 	err := query.Find(&rec).Error
 	if err != nil {
