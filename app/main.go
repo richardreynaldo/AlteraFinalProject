@@ -9,6 +9,10 @@ import (
 	_articleController "finalProject/controllers/articles"
 	_articleRepo "finalProject/drivers/databases/articles"
 
+	_coffeeUsecase "finalProject/business/coffees"
+	_coffeeController "finalProject/controllers/coffees"
+	_coffeeRepo "finalProject/drivers/databases/coffees"
+
 	_dbDriver "finalProject/drivers/mysql"
 
 	// _ipLocatorDriver "finalProject/drivers/thirdparties/iplocator"
@@ -40,6 +44,7 @@ func dbMigrate(db *gorm.DB) {
 	db.AutoMigrate(
 		&_userRepo.User{},
 		&_articleRepo.Articles{},
+		&_coffeeRepo.Coffees{},
 	)
 }
 
@@ -73,10 +78,15 @@ func main() {
 	articleUsecase := _articleUsecase.NewArticleUsecase(articleRepo, userUsecase, timeoutContext)
 	articleCtrl := _articleController.NewArticleController(articleUsecase)
 
+	coffeeRepo := _coffeeRepo.NewMySQLCoffeesRepository(db)
+	coffeeUsecase := _coffeeUsecase.NewCoffeesUsecase(coffeeRepo, timeoutContext)
+	coffeeCtrl := _coffeeController.NewCoffeesController(coffeeUsecase)
+
 	routesInit := _routes.ControllerList{
 		JWTMiddleware:     configJWT.Init(),
 		UserController:    *userCtrl,
 		ArticleController: *articleCtrl,
+		CoffeesController: *coffeeCtrl,
 	}
 	routesInit.RouteRegister(e)
 
