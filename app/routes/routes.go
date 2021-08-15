@@ -2,6 +2,7 @@ package routes
 
 import (
 	"finalProject/controllers/articles"
+	"finalProject/controllers/coffees"
 	"finalProject/controllers/users"
 
 	echo "github.com/labstack/echo/v4"
@@ -12,6 +13,7 @@ type ControllerList struct {
 	JWTMiddleware     middleware.JWTConfig
 	UserController    users.UserController
 	ArticleController articles.ArticleController
+	CoffeesController coffees.CoffeeController
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
@@ -23,6 +25,11 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	article.GET("/list", cl.ArticleController.GetAll)
 	article.POST("/create", cl.ArticleController.Store, middleware.JWTWithConfig(cl.JWTMiddleware))
 	article.PUT("/update", cl.ArticleController.Update, middleware.JWTWithConfig(cl.JWTMiddleware))
+
+	coffee := e.Group("coffee")
+	coffee.GET("/list", cl.CoffeesController.GetAll)
+	coffee.POST("/create", cl.CoffeesController.Store, middleware.JWTWithConfig(cl.JWTMiddleware))
+	coffee.PUT("/update", cl.CoffeesController.Update, middleware.JWTWithConfig(cl.JWTMiddleware))
 
 	// category := e.Group("category")
 	// category.GET("/list", cl.CategoryController.GetAll, middleware.JWTWithConfig(cl.JWTMiddleware))
