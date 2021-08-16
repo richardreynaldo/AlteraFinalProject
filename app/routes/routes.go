@@ -23,6 +23,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	article.GET("/list", cl.ArticleController.GetAll)
 	article.POST("/create", cl.ArticleController.Store, middleware.JWTWithConfig(cl.JWTMiddleware))
 	article.PUT("/update", cl.ArticleController.Update, middleware.JWTWithConfig(cl.JWTMiddleware))
+	article.GET("/find/:id", cl.ArticleController.FindById, middleware.JWTWithConfig(cl.JWTMiddleware))
 
 	// category := e.Group("category")
 	// category.GET("/list", cl.CategoryController.GetAll, middleware.JWTWithConfig(cl.JWTMiddleware))
