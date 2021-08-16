@@ -34,6 +34,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	coffee.GET("/list", cl.CoffeesController.GetAll)
 	coffee.POST("/create", cl.CoffeesController.Store, middleware.JWTWithConfig(cl.JWTMiddleware))
 	coffee.PUT("/update", cl.CoffeesController.Update, middleware.JWTWithConfig(cl.JWTMiddleware))
+	coffee.GET("find/:id", cl.CoffeesController.FindById, middleware.JWTWithConfig(cl.JWTMiddleware))
 
 	transaction := e.Group("transaction")
 	transaction.GET("/list", cl.TransactionHeaderController.GetAll, middleware.JWTWithConfig(cl.JWTMiddleware))
