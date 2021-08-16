@@ -33,6 +33,7 @@ func fromDomain(domain *coffeesUsecase.Domain) *Coffees {
 
 func (rec *Coffees) toDomain() coffeesUsecase.Domain {
 	return coffeesUsecase.Domain{
+		Id:             rec.Id,
 		Name:           rec.Name,
 		ProcessingType: rec.ProcessingType,
 		RoastingLevel:  rec.RoastingLevel,
