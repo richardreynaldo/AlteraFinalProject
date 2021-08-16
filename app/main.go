@@ -13,6 +13,14 @@ import (
 	_coffeeController "finalProject/controllers/coffees"
 	_coffeeRepo "finalProject/drivers/databases/coffees"
 
+	_transactionHeaderUsecase "finalProject/business/transaction_header"
+	_transactionHeaderController "finalProject/controllers/transaction_header"
+	_transactionHeaderRepo "finalProject/drivers/databases/transaction_header"
+
+	// _transactionDetailUsecase "finalProject/business/transaction_detail"
+	// _transactionDetailController "finalProject/controllers/transaction_detail"
+	_transactionDetailRepo "finalProject/drivers/databases/transaction_detail"
+
 	_dbDriver "finalProject/drivers/mysql"
 
 	// _ipLocatorDriver "finalProject/drivers/thirdparties/iplocator"
@@ -45,6 +53,8 @@ func dbMigrate(db *gorm.DB) {
 		&_userRepo.User{},
 		&_articleRepo.Articles{},
 		&_coffeeRepo.Coffees{},
+		&_transactionHeaderRepo.TransactionHeader{},
+		&_transactionDetailRepo.TransactionDetail{},
 	)
 }
 
@@ -82,11 +92,16 @@ func main() {
 	coffeeUsecase := _coffeeUsecase.NewCoffeesUsecase(coffeeRepo, timeoutContext)
 	coffeeCtrl := _coffeeController.NewCoffeesController(coffeeUsecase)
 
+	transactionRepo := _transactionHeaderRepo.NewMySQLTransactionHeaderRepository(db)
+	transactionUsecase := _transactionHeaderUsecase.NewTransactionHeaderUsecase(transactionRepo, timeoutContext)
+	transactionCtrl := _transactionHeaderController.NewTransactionHeaderController(transactionUsecase)
+
 	routesInit := _routes.ControllerList{
-		JWTMiddleware:     configJWT.Init(),
-		UserController:    *userCtrl,
-		ArticleController: *articleCtrl,
-		CoffeesController: *coffeeCtrl,
+		JWTMiddleware:               configJWT.Init(),
+		UserController:              *userCtrl,
+		ArticleController:           *articleCtrl,
+		CoffeesController:           *coffeeCtrl,
+		TransactionHeaderController: *transactionCtrl,
 	}
 	routesInit.RouteRegister(e)
 

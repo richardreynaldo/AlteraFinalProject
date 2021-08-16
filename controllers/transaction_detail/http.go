@@ -1,4 +1,4 @@
-package transaction_header
+package transaction_detail
 
 import (
 	"errors"
