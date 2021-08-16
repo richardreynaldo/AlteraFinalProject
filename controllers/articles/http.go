@@ -78,3 +78,14 @@ func (ctrl *ArticleController) GetAll(c echo.Context) error {
 
 	return controller.NewSuccessResponse(c, responseController)
 }
+
+func (ctrl *ArticleController) FindById(c echo.Context) error {
+	ctx := c.Request().Context()
+	id, _ := strconv.Atoi(c.Param("id"))
+	res, err := ctrl.articleUsecase.GetByID(ctx, id)
+	if err != nil {
+		return controller.NewErrorResponse(c, http.StatusInternalServerError, err)
+	}
+	responseController := response.FromDomain(res)
+	return controller.NewSuccessResponse(c, responseController)
+}
