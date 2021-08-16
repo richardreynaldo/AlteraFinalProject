@@ -3,6 +3,8 @@ package routes
 import (
 	"finalProject/controllers/articles"
 	"finalProject/controllers/coffees"
+	"finalProject/controllers/transaction_detail"
+	"finalProject/controllers/transaction_header"
 	"finalProject/controllers/users"
 
 	echo "github.com/labstack/echo/v4"
@@ -10,10 +12,12 @@ import (
 )
 
 type ControllerList struct {
-	JWTMiddleware     middleware.JWTConfig
-	UserController    users.UserController
-	ArticleController articles.ArticleController
-	CoffeesController coffees.CoffeeController
+	JWTMiddleware               middleware.JWTConfig
+	UserController              users.UserController
+	ArticleController           articles.ArticleController
+	CoffeesController           coffees.CoffeeController
+	TransactionHeaderController transaction_header.TransactionHeaderController
+	TransactionDetailController transaction_detail.TransactionDetailController
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
@@ -31,10 +35,8 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	coffee.POST("/create", cl.CoffeesController.Store, middleware.JWTWithConfig(cl.JWTMiddleware))
 	coffee.PUT("/update", cl.CoffeesController.Update, middleware.JWTWithConfig(cl.JWTMiddleware))
 
-	// category := e.Group("category")
-	// category.GET("/list", cl.CategoryController.GetAll, middleware.JWTWithConfig(cl.JWTMiddleware))
-
-	// news := e.Group("news")
-	// news.POST("/store", cl.NewsController.Store, middleware.JWTWithConfig(cl.JWTMiddleware))
-	// news.PUT("/update", cl.NewsController.Update, middleware.JWTWithConfig(cl.JWTMiddleware))
+	transaction := e.Group("transaction")
+	transaction.GET("/list", cl.TransactionHeaderController.GetAll, middleware.JWTWithConfig(cl.JWTMiddleware))
+	transaction.POST("/create", cl.TransactionHeaderController.Store, middleware.JWTWithConfig(cl.JWTMiddleware))
+	transaction.PUT("/update", cl.TransactionHeaderController.Update, middleware.JWTWithConfig(cl.JWTMiddleware))
 }

@@ -17,7 +17,7 @@ type TransactionHeaderController struct {
 	transactionHeaderUsecase transaction_header.Usecase
 }
 
-func NewArticleController(uc transaction_header.Usecase) *TransactionHeaderController {
+func NewTransactionHeaderController(uc transaction_header.Usecase) *TransactionHeaderController {
 	return &TransactionHeaderController{
 		transactionHeaderUsecase: uc,
 	}

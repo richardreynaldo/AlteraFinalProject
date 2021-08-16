@@ -92,7 +92,7 @@ func (ar *mysqlTransactionDetailRepository) Update(ctx context.Context, newsDoma
 func (ar *mysqlTransactionDetailRepository) Find(ctx context.Context) ([]transaction_detail.Domain, error) {
 	rec := []TransactionDetail{}
 
-	query := ar.Conn.Preload("Coffee")
+	query := ar.Conn.Preload("Coffee").Preload("Transaction")
 
 	err := query.Find(&rec).Error
 	if err != nil {
