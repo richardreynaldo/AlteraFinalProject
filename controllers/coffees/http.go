@@ -78,3 +78,14 @@ func (ctrl *CoffeeController) GetAll(c echo.Context) error {
 
 	return controller.NewSuccessResponse(c, responseController)
 }
+
+func (ctrl *CoffeeController) FindById(c echo.Context) error {
+	ctx := c.Request().Context()
+	id, _ := strconv.Atoi(c.Param("id"))
+	res, err := ctrl.coffeesUsecase.GetByID(ctx, id)
+	if err != nil {
+		return controller.NewErrorResponse(c, http.StatusInternalServerError, err)
+	}
+	responseController := response.FromDomain(res)
+	return controller.NewSuccessResponse(c, responseController)
+}

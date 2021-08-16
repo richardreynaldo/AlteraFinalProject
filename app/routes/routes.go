@@ -30,6 +30,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	coffee.GET("/list", cl.CoffeesController.GetAll)
 	coffee.POST("/create", cl.CoffeesController.Store, middleware.JWTWithConfig(cl.JWTMiddleware))
 	coffee.PUT("/update", cl.CoffeesController.Update, middleware.JWTWithConfig(cl.JWTMiddleware))
+	coffee.GET("find/:id", cl.CoffeesController.FindById, middleware.JWTWithConfig(cl.JWTMiddleware))
 
 	// category := e.Group("category")
 	// category.GET("/list", cl.CategoryController.GetAll, middleware.JWTWithConfig(cl.JWTMiddleware))
