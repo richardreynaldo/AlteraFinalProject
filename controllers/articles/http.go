@@ -2,6 +2,7 @@ package articles
 
 import (
 	"errors"
+	"finalProject/app/middleware"
 	"finalProject/business/articles"
 	controller "finalProject/controllers"
 	"finalProject/controllers/articles/request"
@@ -25,13 +26,13 @@ func NewArticleController(uc articles.Usecase) *ArticleController {
 
 func (ctrl *ArticleController) Store(c echo.Context) error {
 	ctx := c.Request().Context()
-
+	userId := middleware.GetUser(c).ID
 	req := request.CreateArticle{}
 	if err := c.Bind(&req); err != nil {
 		return controller.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	resp, err := ctrl.articleUsecase.Store(ctx, req.ToDomain())
+	resp, err := ctrl.articleUsecase.Store(ctx, req.ToDomain(), userId)
 	if err != nil {
 		return controller.NewErrorResponse(c, http.StatusInternalServerError, err)
 	}

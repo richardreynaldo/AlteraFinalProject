@@ -68,11 +68,11 @@ func (au *articlesUsecase) GetByDescription(ctx context.Context, articleDescript
 
 	return res, nil
 }
-func (au *articlesUsecase) Store(ctx context.Context, articleDomain *Domain) (Domain, error) {
+func (au *articlesUsecase) Store(ctx context.Context, articleDomain *Domain, userId int) (Domain, error) {
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
 
-	_, err := au.userUsecase.GetByID(ctx, articleDomain.UserId)
+	_, err := au.userUsecase.GetByID(ctx, userId)
 	if err != nil {
 		return Domain{}, business.ErrCategoryNotFound
 	}
@@ -86,6 +86,7 @@ func (au *articlesUsecase) Store(ctx context.Context, articleDomain *Domain) (Do
 	if existedNews != (Domain{}) {
 		return Domain{}, business.ErrDuplicateData
 	}
+	articleDomain.UserId = userId
 
 	result, err := au.articlesRepository.Store(ctx, articleDomain)
 	if err != nil {

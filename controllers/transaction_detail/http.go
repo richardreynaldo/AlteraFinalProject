@@ -17,7 +17,7 @@ type TransactionDetailController struct {
 	transactionDetailUsecase transaction_detail.Usecase
 }
 
-func NewArticleController(uc transaction_detail.Usecase) *TransactionDetailController {
+func NewTransactionDetailController(uc transaction_detail.Usecase) *TransactionDetailController {
 	return &TransactionDetailController{
 		transactionDetailUsecase: uc,
 	}
