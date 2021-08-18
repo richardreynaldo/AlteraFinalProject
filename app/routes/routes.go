@@ -3,6 +3,7 @@ package routes
 import (
 	"finalProject/controllers/articles"
 	"finalProject/controllers/coffees"
+	"finalProject/controllers/reviews"
 	"finalProject/controllers/transaction_detail"
 	"finalProject/controllers/transaction_header"
 	"finalProject/controllers/users"
@@ -18,6 +19,7 @@ type ControllerList struct {
 	CoffeesController           coffees.CoffeeController
 	TransactionHeaderController transaction_header.TransactionHeaderController
 	TransactionDetailController transaction_detail.TransactionDetailController
+	ReviewController            reviews.ReviewController
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
@@ -41,4 +43,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	transaction.GET("/list", cl.TransactionHeaderController.GetAll, middleware.JWTWithConfig(cl.JWTMiddleware))
 	transaction.POST("/create", cl.TransactionHeaderController.Store, middleware.JWTWithConfig(cl.JWTMiddleware))
 	transaction.PUT("/update", cl.TransactionHeaderController.Update, middleware.JWTWithConfig(cl.JWTMiddleware))
+
+	reviews := e.Group("review")
+	reviews.POST("/create", cl.ReviewController.Store, middleware.JWTWithConfig(cl.JWTMiddleware))
 }
