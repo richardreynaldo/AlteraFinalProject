@@ -19,7 +19,7 @@ type Usecase interface {
 	Fetch(ctx context.Context, page, perpage int) ([]Domain, int, error)
 	GetByID(ctx context.Context, articlesId int) (Domain, error)
 	GetByDescription(ctx context.Context, articlesDescription string) (Domain, error)
-	Store(ctx context.Context, articlesDomain *Domain) (Domain, error)
+	Store(ctx context.Context, articlesDomain *Domain, userId int) (Domain, error)
 	Update(ctx context.Context, articlesDomain *Domain) (*Domain, error)
 	GetAll(ctx context.Context) ([]Domain, error)
 }

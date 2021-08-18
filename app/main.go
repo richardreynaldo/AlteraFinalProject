@@ -17,8 +17,8 @@ import (
 	_transactionHeaderController "finalProject/controllers/transaction_header"
 	_transactionHeaderRepo "finalProject/drivers/databases/transaction_header"
 
-	// _transactionDetailUsecase "finalProject/business/transaction_detail"
-	// _transactionDetailController "finalProject/controllers/transaction_detail"
+	_transactionDetailUsecase "finalProject/business/transaction_detail"
+	_transactionDetailController "finalProject/controllers/transaction_detail"
 	_transactionDetailRepo "finalProject/drivers/databases/transaction_detail"
 
 	_dbDriver "finalProject/drivers/mysql"
@@ -92,8 +92,12 @@ func main() {
 	coffeeUsecase := _coffeeUsecase.NewCoffeesUsecase(coffeeRepo, timeoutContext)
 	coffeeCtrl := _coffeeController.NewCoffeesController(coffeeUsecase)
 
+	transactionDetailRepo := _transactionDetailRepo.NewMySQLTransactionDetailRepository(db)
+	transactionDetailUsecase := _transactionDetailUsecase.NewTransactionDetailUsecase(transactionDetailRepo, timeoutContext)
+	transactionDetailCtrl := _transactionDetailController.NewTransactionDetailController(transactionDetailUsecase)
+
 	transactionRepo := _transactionHeaderRepo.NewMySQLTransactionHeaderRepository(db)
-	transactionUsecase := _transactionHeaderUsecase.NewTransactionHeaderUsecase(transactionRepo, timeoutContext)
+	transactionUsecase := _transactionHeaderUsecase.NewTransactionHeaderUsecase(transactionRepo, transactionDetailUsecase, timeoutContext)
 	transactionCtrl := _transactionHeaderController.NewTransactionHeaderController(transactionUsecase)
 
 	routesInit := _routes.ControllerList{
@@ -102,6 +106,7 @@ func main() {
 		ArticleController:           *articleCtrl,
 		CoffeesController:           *coffeeCtrl,
 		TransactionHeaderController: *transactionCtrl,
+		TransactionDetailController: *transactionDetailCtrl,
 	}
 	routesInit.RouteRegister(e)
 

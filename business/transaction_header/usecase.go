@@ -3,18 +3,21 @@ package transaction_header
 import (
 	"context"
 	"finalProject/business"
+	"finalProject/business/transaction_detail"
 	"time"
 )
 
 type transactionHeaderUsecase struct {
 	transactionHeaderRepository Repository
+	transactionDetailUsecase    transaction_detail.Usecase
 	contextTimeout              time.Duration
 }
 
-func NewTransactionHeaderUsecase(cr Repository, timeout time.Duration) Usecase {
+func NewTransactionHeaderUsecase(cr Repository, uc transaction_detail.Usecase, timeout time.Duration) Usecase {
 	return &transactionHeaderUsecase{
 		transactionHeaderRepository: cr,
 		contextTimeout:              timeout,
+		transactionDetailUsecase:    uc,
 	}
 }
 
