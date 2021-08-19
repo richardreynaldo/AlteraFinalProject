@@ -19,5 +19,6 @@ func (req *CreateTransactionHeader) ToDomain() *transaction_header.Domain {
 		TotalPrice:    req.TotalPrice,
 		TotalQuantity: req.TotalQuantity,
 		Status:        req.Status,
+		
 	}
 }
