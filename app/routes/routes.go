@@ -3,6 +3,7 @@ package routes
 import (
 	"finalProject/controllers/articles"
 	"finalProject/controllers/coffees"
+	"finalProject/controllers/reviews"
 	"finalProject/controllers/transaction_detail"
 	"finalProject/controllers/transaction_header"
 	"finalProject/controllers/users"
@@ -18,6 +19,7 @@ type ControllerList struct {
 	CoffeesController           coffees.CoffeeController
 	TransactionHeaderController transaction_header.TransactionHeaderController
 	TransactionDetailController transaction_detail.TransactionDetailController
+	ReviewController            reviews.ReviewController
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
@@ -29,6 +31,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	article.GET("/list", cl.ArticleController.GetAll)
 	article.POST("/create", cl.ArticleController.Store, middleware.JWTWithConfig(cl.JWTMiddleware))
 	article.PUT("/update", cl.ArticleController.Update, middleware.JWTWithConfig(cl.JWTMiddleware))
+	article.GET("/find/:id", cl.ArticleController.FindById, middleware.JWTWithConfig(cl.JWTMiddleware))
 
 	coffee := e.Group("coffee")
 	coffee.GET("/list", cl.CoffeesController.GetAll)
@@ -40,4 +43,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	transaction.GET("/list", cl.TransactionDetailController.GetAll, middleware.JWTWithConfig(cl.JWTMiddleware))
 	transaction.POST("/create", cl.TransactionDetailController.Store, middleware.JWTWithConfig(cl.JWTMiddleware))
 	transaction.PUT("/update", cl.TransactionDetailController.Update, middleware.JWTWithConfig(cl.JWTMiddleware))
+
+	reviews := e.Group("review")
+	reviews.POST("/create", cl.ReviewController.Store, middleware.JWTWithConfig(cl.JWTMiddleware))
 }

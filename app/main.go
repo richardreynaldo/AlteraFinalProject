@@ -21,6 +21,10 @@ import (
 	_transactionDetailController "finalProject/controllers/transaction_detail"
 	_transactionDetailRepo "finalProject/drivers/databases/transaction_detail"
 
+	_reviewUsecase "finalProject/business/reviews"
+	_reviewController "finalProject/controllers/reviews"
+	_reviewRepo "finalProject/drivers/databases/reviews"
+
 	_dbDriver "finalProject/drivers/mysql"
 
 	// _ipLocatorDriver "finalProject/drivers/thirdparties/iplocator"
@@ -55,6 +59,7 @@ func dbMigrate(db *gorm.DB) {
 		&_coffeeRepo.Coffees{},
 		&_transactionHeaderRepo.TransactionHeader{},
 		&_transactionDetailRepo.TransactionDetail{},
+		&_reviewRepo.Reviews{},
 	)
 }
 
@@ -100,6 +105,10 @@ func main() {
 	transactionCtrl := _transactionHeaderController.NewTransactionHeaderController(transactionUsecase)
 	transactionDetailCtrl := _transactionDetailController.NewTransactionDetailController(transactionDetailUsecase, transactionUsecase)
 
+	reviewRepo := _reviewRepo.NewMySQLReviewRepository(db)
+	reviewUsecase := _reviewUsecase.NewArticleUsecase(reviewRepo, userUsecase, timeoutContext)
+	reviewCtrl := _reviewController.NewReviewController(reviewUsecase)
+
 	routesInit := _routes.ControllerList{
 		JWTMiddleware:               configJWT.Init(),
 		UserController:              *userCtrl,
@@ -107,6 +116,7 @@ func main() {
 		CoffeesController:           *coffeeCtrl,
 		TransactionHeaderController: *transactionCtrl,
 		TransactionDetailController: *transactionDetailCtrl,
+		ReviewController:            *reviewCtrl,
 	}
 	routesInit.RouteRegister(e)
 
