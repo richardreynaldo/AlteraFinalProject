@@ -99,11 +99,11 @@ func main() {
 
 	transactionDetailRepo := _transactionDetailRepo.NewMySQLTransactionDetailRepository(db)
 	transactionDetailUsecase := _transactionDetailUsecase.NewTransactionDetailUsecase(transactionDetailRepo, timeoutContext)
-	transactionDetailCtrl := _transactionDetailController.NewTransactionDetailController(transactionDetailUsecase)
 
 	transactionRepo := _transactionHeaderRepo.NewMySQLTransactionHeaderRepository(db)
 	transactionUsecase := _transactionHeaderUsecase.NewTransactionHeaderUsecase(transactionRepo, transactionDetailUsecase, timeoutContext)
 	transactionCtrl := _transactionHeaderController.NewTransactionHeaderController(transactionUsecase)
+	transactionDetailCtrl := _transactionDetailController.NewTransactionDetailController(transactionDetailUsecase, transactionUsecase)
 
 	reviewRepo := _reviewRepo.NewMySQLReviewRepository(db)
 	reviewUsecase := _reviewUsecase.NewArticleUsecase(reviewRepo, userUsecase, timeoutContext)

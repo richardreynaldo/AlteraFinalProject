@@ -42,7 +42,7 @@ func (ctrl *ArticleController) Store(c echo.Context) error {
 
 func (ctrl *ArticleController) Update(c echo.Context) error {
 	ctx := c.Request().Context()
-
+	userId := middleware.GetUser(c).ID
 	id := c.QueryParam("id")
 	if strings.TrimSpace(id) == "" {
 		return controller.NewErrorResponse(c, http.StatusBadRequest, errors.New("missing required id"))
@@ -52,8 +52,8 @@ func (ctrl *ArticleController) Update(c echo.Context) error {
 	if err := c.Bind(&req); err != nil {
 		return controller.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
-
 	domainReq := req.ToDomain()
+	domainReq.UserId = userId
 	idInt, _ := strconv.Atoi(id)
 	domainReq.Id = idInt
 	resp, err := ctrl.articleUsecase.Update(ctx, domainReq)

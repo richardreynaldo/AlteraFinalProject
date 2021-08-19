@@ -40,9 +40,9 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	coffee.GET("/find/:id", cl.CoffeesController.FindById, middleware.JWTWithConfig(cl.JWTMiddleware))
 
 	transaction := e.Group("transaction")
-	transaction.GET("/list", cl.TransactionHeaderController.GetAll, middleware.JWTWithConfig(cl.JWTMiddleware))
-	transaction.POST("/create", cl.TransactionHeaderController.Store, middleware.JWTWithConfig(cl.JWTMiddleware))
-	transaction.PUT("/update", cl.TransactionHeaderController.Update, middleware.JWTWithConfig(cl.JWTMiddleware))
+	transaction.GET("/list", cl.TransactionDetailController.GetAll, middleware.JWTWithConfig(cl.JWTMiddleware))
+	transaction.POST("/create", cl.TransactionDetailController.Store, middleware.JWTWithConfig(cl.JWTMiddleware))
+	transaction.PUT("/update", cl.TransactionDetailController.Update, middleware.JWTWithConfig(cl.JWTMiddleware))
 
 	reviews := e.Group("review")
 	reviews.POST("/create", cl.ReviewController.Store, middleware.JWTWithConfig(cl.JWTMiddleware))
