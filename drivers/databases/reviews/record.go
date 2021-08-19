@@ -25,6 +25,7 @@ func fromDomain(domain *reviewUsecase.Domain) *Reviews {
 		Rating:    domain.Rating,
 		UserId:    domain.UserId,
 		ArticleId: domain.ArticleId,
+		Review:    domain.Review,
 	}
 }
 
