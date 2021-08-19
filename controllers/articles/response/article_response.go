@@ -11,7 +11,6 @@ type Article struct {
 	UpdatedAt   time.Time `json:"updatedAt"`
 	DeletedAt   time.Time `json:"deletedAt"`
 	UserId      int       `json:"userId"`
-	UserName    string    `json:"userName"`
 	Description string    `json:"description"`
 }
 
@@ -22,7 +21,6 @@ func FromDomain(domain articles.Domain) Article {
 		UpdatedAt:   domain.UpdatedAt,
 		DeletedAt:   domain.DeletedAt,
 		UserId:      domain.UserId,
-		UserName:    domain.UserName,
 		Description: domain.Description,
 	}
 }

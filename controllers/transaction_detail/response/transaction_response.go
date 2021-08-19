@@ -12,7 +12,6 @@ type TransactionDetail struct {
 	DeletedAt     time.Time `json:"deleted_at"`
 	TransactionId int       `json:"transaction_id"`
 	CoffeeId      int       `json:"coffee_id"`
-	CoffeeName    string    `json:"coffee_name"`
 	Price         float64   `json:"price"`
 	Quantity      int       `json:"quantity"`
 }
@@ -25,7 +24,6 @@ func FromDomain(domain transaction_detail.Domain) TransactionDetail {
 		DeletedAt:     domain.DeletedAt,
 		TransactionId: domain.TransactionId,
 		CoffeeId:      domain.CoffeeId,
-		CoffeeName:    domain.CoffeeName,
 		Price:         domain.Price,
 		Quantity:      domain.Quantity,
 	}
