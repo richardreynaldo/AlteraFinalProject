@@ -26,8 +26,8 @@ func TestArticleUsecase_GetById(t *testing.T) {
 	}
 
 	type args struct {
-		cid       string
-		articleID int
+		cid    string
+		userID int
 	}
 
 	tests := []struct {
@@ -41,8 +41,8 @@ func TestArticleUsecase_GetById(t *testing.T) {
 		{
 			name: "error from repo",
 			args: args{
-				cid:       "test",
-				articleID: 0,
+				cid:    "test",
+				userID: 0,
 			},
 			doMock: func(mock *mock.MockRepository) {
 				mock.EXPECT().GetByID(ctx, 0).Return(0, caseError)
@@ -53,8 +53,8 @@ func TestArticleUsecase_GetById(t *testing.T) {
 		{
 			name: "flow success",
 			args: args{
-				cid:       "test",
-				articleID: 1,
+				cid:    "test",
+				userID: 1,
 			},
 			doMock: func(mock *mock.MockRepository) {
 				mock.EXPECT().GetByID(ctx, 1).
@@ -67,14 +67,14 @@ func TestArticleUsecase_GetById(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			fmt.Println(tt.args.articleID)
+			fmt.Println(tt.args.userID)
 			mockCtrl := gomock.NewController(t)
 			defer mockCtrl.Finish()
 
 			mockRepo := tt.fields.userRepo
 
 			tt.doMock(&mockRepo)
-			got, err := userUsecase.GetByID(ctx, tt.args.articleID)
+			got, err := userUsecase.GetByID(ctx, tt.args.userID)
 			if !reflect.DeepEqual(err, tt.wantErr) {
 				t.Errorf("articleUsecase.getById error = %v, wantErr %v", err, tt.wantErr)
 				return

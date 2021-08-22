@@ -18,7 +18,7 @@ var (
 	reviewUsecase reviews.Usecase
 )
 
-func TestArticleUsecase_GetById(t *testing.T) {
+func TestReviewUsecase_GetById(t *testing.T) {
 	ctx := context.Background()
 
 	type fields struct {
@@ -27,7 +27,7 @@ func TestArticleUsecase_GetById(t *testing.T) {
 
 	type args struct {
 		cid       string
-		articleID int
+		reviewID int
 	}
 
 	tests := []struct {
@@ -42,7 +42,7 @@ func TestArticleUsecase_GetById(t *testing.T) {
 			name: "error from repo",
 			args: args{
 				cid:       "test",
-				articleID: 0,
+				reviewID: 0,
 			},
 			doMock: func(mock *mock.MockRepository) {
 				mock.EXPECT().GetByID(ctx, 0).Return(0, caseError)
@@ -54,7 +54,7 @@ func TestArticleUsecase_GetById(t *testing.T) {
 			name: "flow success",
 			args: args{
 				cid:       "test",
-				articleID: 1,
+				reviewID: 1,
 			},
 			doMock: func(mock *mock.MockRepository) {
 				mock.EXPECT().GetByID(ctx, 1).
@@ -67,14 +67,14 @@ func TestArticleUsecase_GetById(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			fmt.Println(tt.args.articleID)
+			fmt.Println(tt.args.reviewID)
 			mockCtrl := gomock.NewController(t)
 			defer mockCtrl.Finish()
 
 			mockRepo := tt.fields.reviewRepository
 
 			tt.doMock(&mockRepo)
-			got, err := reviewUsecase.GetByID(ctx, tt.args.articleID)
+			got, err := reviewUsecase.GetByID(ctx, tt.args.reviewID)
 			if !reflect.DeepEqual(err, tt.wantErr) {
 				t.Errorf("articleUsecase.getById error = %v, wantErr %v", err, tt.wantErr)
 				return
